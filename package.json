@@ -1,0 +1,25 @@
+{
+  "name": "qiniu-mini-program",
+  "version": "1.0.0",
+  "description": "小程序七牛云上传图片或者视频，taro，uni-app等",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wangQiaoBrother/Qiniu-Mini-Program.git"
+  },
+  "keywords": [
+    "小程序",
+    "七牛云",
+    "taro",
+    "uni-app"
+  ],
+  "author": "wangqiao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program/issues"
+  },
+  "homepage": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program#readme"
+}
