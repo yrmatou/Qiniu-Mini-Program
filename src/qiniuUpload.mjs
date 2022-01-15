@@ -1,50 +1,52 @@
 /**
- * 七牛云上传直连：https://developer.qiniu.com/kodo/1312/upload
+ * 针对微信小程序、Vue、Taro、ES6写法的七牛云上传图片或者视频js包
+ * 详细使用看README.md即可
  */
-/**
- * init(options) 即updateConfigWithOptions(options)，会对config进行赋值
- */
- let config = {
+let config = {
   /**
    * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECN2分别对应七牛云的
-   * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域
+   * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域，后续新增的话再补充
    */
   qiniuRegion: '',
-  // 七牛云bucket 外链前缀，外链在下载资源时用到
+  /**
+   * 七牛云bucket 外链前缀，外链在下载资源时用到 图片的下载域名前缀 http(s)://xxxx等
+   */
   qiniuBucketURLPrefix: '',
   /**
-   * 获取upToken方法三选一即可，执行优先级为：upToken > upTokenURL > upTokenFunc。
-   * 三选一，剩下两个置空。推荐使用 qiniuUploadToken 详情请见 README.md
+   * 获取upToken方法二选一即可，执行优先级为：upToken > upTokenUrl
+   * 二选一，推荐使用 qiniuUploadToken 外部传入token方式最好，详情请见 README.md
    */
-  // 由其他程序生成七牛云upToken，然后直接写入upToken
   qiniuUploadToken: '',
-  // 从指定 url 通过 HTTP GET 获取 upToken，返回的格式必须是 json 且包含 upToken 字段，例如： {"upToken": "0MLvWPnyy..."}
-  qiniuUploadTokenURL: '',
+  /**
+   * 自己的请求token的服务地址，从指定 url 通过 HTTP GET 获取 upToken
+   * 返回的格式必须是 json 且包含 upToken 字段，例如： {"upToken": "0MLvWPnyy..."}
+   */
+  qiniuUploadTokenUrl: '',
   /**
    * qiniuShouldUseQiniuFileName 如果是 true，则文件的 key 由 qiniu 服务器分配（全局去重）。
-   * 如果是 false，则文件的 key 使用微信自动生成的 filename。出于初代sdk用户升级后兼容问题的考虑，默认是 false。
-   * 微信自动生成的 filename较长，导致fileURL较长。
-   * 推荐使用{qiniuShouldUseQiniuFileName: true} + "通过fileURL下载文件时，自定义下载名" 的组合方式。
-   * 自定义上传key 需要两个条件：1. 此处shouldUseQiniuFileName值为false。 2. 通过修改qiniuUploader.upload方法传入的options参数，可以进行自定义key。
-   * （请不要直接在sdk中修改options参数，修改方法请见demo的index.js）
-   * 通过fileURL下载文件时，自定义下载名，请参考：七牛云“对象存储 > 产品手册 > 下载资源 > 下载设置 > 自定义资源下载名”（https://developer.qiniu.com/kodo/manual/1659/download-setting）。
-   * 本sdk在README.md的"常见问题"板块中，有"通过fileURL下载文件时，自定义下载名"使用样例。
+   * 自定义上传key 需要两个条件：
+   * 1. 此处shouldUseQiniuFileName值为false。
+   * 2. 通过修改qiniuUploader.upload方法传入的options参数，可以进行自定义key。
+   * 结合自己的情况，省事就设置为true，假如指定了上传目录则设置为false，自定义拼接key值
   */
   qiniuShouldUseQiniuFileName: false
 }
-let configBool = false; // 是否已经初始化过
-// init(options) 将七牛云相关配置初始化进本sdk
-// 在整个程序生命周期中，只需要 init(options); 一次即可
-// 如果需要变更七牛云配置，再次调用 init(options); 即可
+/**
+ * 是否已经初始化过 正常只会初始化一次 假如token过期则需要再刷一次
+ */
+let configBool = false;
+/**
+ * 七牛云配置初始化
+ */
 function init(options) {
   configBool = true
   if (!options || !options.region) {
-    return Promise.reject('qiniu uploader need your bucket region')
+    return Promise.reject('qiniu config params error')
   }
   const keys = {
     'region': 'qiniuRegion',
     'upToken': 'qiniuUploadToken',
-    'upTokenURL': 'qiniuUploadTokenURL',
+    'upTokenUrl': 'qiniuUploadTokenUrl',
     'domain': 'qiniuBucketURLPrefix',
     'shouldUseQiniuFileName': 'qiniuShouldUseQiniuFileName'
   }
@@ -54,16 +56,17 @@ function init(options) {
   return Promise.resolve()
 }
 /**
- * 正式上传的前置方法，做预处理，应用七牛云配置
+ * 正式上传的前置方法，做预处理，初始化七牛云配置
+ * filePath：上传的文件本地路径，options：初始化参数，update：是否需要更新初始化参数，
+ * progress：上传进度函数，cancelTask：取消上传任务
  */
-function upload({ filePath, options, update = false, progress, cancelTask }: any) {
-  return new Promise<void>(async (resolve, reject) => {
+function upload({ filePath, options, update = false, progress, cancelTask }) {
+  return new Promise(async (resolve, reject) => {
     try {
-      if (null == filePath) {
-        return reject('qiniu uploader need filePath to upload');
+      if (!filePath) {
+        return reject('filePath is null');
       }
-      if (!configBool || update) {
-        configBool = true
+      if (options && (!configBool || update)) {
         await init(options)
       }
       await getToken()
@@ -75,29 +78,29 @@ function upload({ filePath, options, update = false, progress, cancelTask }: any
   })
 }
 /**
- * 三种方式获取token 
+ * 二种方式获取token 
  */
 function getToken() {
-  return new Promise<void>(async (resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     // 第一种 直接赋值token
     if (config.qiniuUploadToken) {
       return resolve()
     }
     // 第二种 方法内request获取token
-    if (config.qiniuUploadTokenURL) {
+    if (config.qiniuUploadTokenUrl) {
       await getQiniuToken()
       return resolve()
     }
-    reject('qiniu uploader need one of [upToken, upTokenURL, upTokenFunc]');
+    reject('qiniu uploader need upToken or upTokenUrl');
   })
 }
 /**
- * 上传函数
+ * 执行上传函数
  */
 function doUpload({ filePath, options, progress, cancelTask }) {
-  return new Promise<void>(async (resolve, reject) => {
-    if (null == config.qiniuUploadToken && config.qiniuUploadToken.length > 0) {
-      return reject('qiniu UploadToken is null, please check the init config or networking');
+  return new Promise(async (resolve, reject) => {
+    if (!config.qiniuUploadToken) {
+      return reject('qiniu uploadToken is null, please check the init config or networking');
     }
     const url = await uploadURLFromRegionCode(config.qiniuRegion);
     let fileName = filePath.split('//')[1];
@@ -107,34 +110,35 @@ function doUpload({ filePath, options, progress, cancelTask }) {
     let formData = { 'token': config.qiniuUploadToken };
     // qiniuShouldUseQiniuFileName 如果是 true，则文件的 key 由 qiniu 服务器分配（全局去重）。
     // 如果是 false，则文件的 key 使用微信自动生成的 filename。出于初代sdk用户升级后兼容问题的考虑，默认是 false。
-    if (!config.qiniuShouldUseQiniuFileName) { formData['key'] = fileName }
+    if (!config.qiniuShouldUseQiniuFileName) { formData['key'] = fileName };
     const uploadTask = wx.uploadFile({
       url: url,
       filePath,
       name: 'file',
       formData,
       success: (res) => {
-        if (res.statusCode !== 200) return reject(res)
-        const dataString = res.data
         try {
+          if (res.statusCode !== 200) return reject(res);
+          const dataString = res.data;
           const dataObject = JSON.parse(dataString);
-          dataObject.imageUrl = `${config.qiniuBucketURLPrefix}/${dataObject.key}`; // 拼接fileURL
-          resolve(dataObject)
+          // 拼接fileURL 不管是qiniuShouldUseQiniuFileName true还是false 都需要拼接
+          dataObject.imageUrl = `${config.qiniuBucketURLPrefix}/${dataObject.key}`;
+          resolve(dataObject);
         } catch (e) {
-          reject(e)
+          reject(e);
         }
       },
       fail: (error) => {
-        reject(error)
+        reject(error);
       }
     })
     // 文件上传进度
     uploadTask.onProgressUpdate((res) => {
-      progress && progress(res)
+      progress && progress(res);
     })
     // 中断文件上传
     cancelTask && cancelTask(() => {
-      uploadTask.abort()
+      uploadTask.abort();
     })
   })
 }
@@ -143,16 +147,16 @@ function doUpload({ filePath, options, progress, cancelTask }) {
  * 这种形式接口返回参数格式必须严格按照下面来
  */
 function getQiniuToken() {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     wx.request({
-      url: config.qiniuUploadTokenURL,
+      url: config.qiniuUploadTokenUrl,
       success: (res) => {
         const token = res.data.upToken;
         if (token && token.length > 0) {
           config.qiniuUploadToken = token;
           return resolve()
         }
-        reject('qiniuUploader cannot get your token, please check the upTokenURL or server')
+        reject('qiniuUploader cannot get your token, please check the upTokenUrl or server')
       },
       fail: (error) => {
         reject('qiniu UploadToken is null, please check the init config or networking: ' + error)
@@ -177,7 +181,7 @@ function uploadURLFromRegionCode(code) {
   if (!map.has(code)) return Promise.reject('region code empty')
   return Promise.resolve(map.get(code))
 }
-module.exports = {
+export default {
   init,
   upload
 }
