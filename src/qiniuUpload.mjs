@@ -39,8 +39,7 @@ function setConfig(options) {
     'region': 'qiniuRegion',
     'upToken': 'qiniuUploadToken',
     'upTokenUrl': 'qiniuUploadTokenUrl',
-    'domain': 'qiniuBucketURLPrefix',
-    'shouldUseQiniuFileName': 'qiniuShouldUseQiniuFileName'
+    'domain': 'qiniuBucketURLPrefix'
   }
   Object.keys(options).forEach(k => {
     keys[k] && (config[keys[k]] = options[k] || '')

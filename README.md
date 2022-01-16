@@ -1,2 +1,150 @@
 # Qiniu-Mini-Program
-小程序使用七牛云上传图片或者视频，原生小程序代码、Taro、Uni-App等。
+> 小程序使用七牛云上传图片或者视频，原生小程序代码、Taro、Uni-App等。  
+
+[toc]
+
+### 资料
+- [七牛云直接上传文档](https://developer.qiniu.com/kodo/1312/upload)  
+
+### 安装
+```js
+npm install qiniu-mini-program 或者 yarn add qiniu-mini-program
+```
+
+### 2分钟使用教程
+
+- **2种页面调用方法**
+```js
+1. ESM引入 import qn from 'qiniu-mini-program';
+
+  // 自己封装的Promise方法
+  export const uploadQiniuCommon = (filePath) => {
+    return new Promise((resolve, reject) => {
+      // 上传需要的参数 可从服务端获取后保存到全局store里面
+      const { upToken, uploadUrl, domain, region } = getState('global').qiniuOptions || {}
+      // 获取上传文件的类型.png、.jpg等
+      const ext = filePath?.substring(filePath.lastIndexOf("."))
+      // 自定义设置的key值 dateFormat方法在下面
+      const newFileName = `${dateFormat(new Date(), "yyyyMMddhhmmss")}_${Math.random() * 10000}${ext}`
+      qn.upload({
+        update: true, // 是否需要更新配置
+        filePath,
+        options: {
+          key: `${uploadUrl}${newFileName}`, // uploadUrl是后台传的目录名可有可无 下载域名后面的路径加后缀名
+          region, // 上传地区 ECN等
+          upToken, // 上传凭证 服务端获取到存到全局数据中心
+          domain, // 图片下载前缀
+          shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称
+        }
+      }).then(res => {
+        if (!res?.imageUrl) return reject(res)
+        resolve(res?.imageUrl)
+      }).catch(res => {
+        // token过期或者错误
+        if (res?.statusCode === 401) {
+          // 根据自己所用框架清除全局七牛云配置 我用的时taro框架 redux方式
+          // 一般这里需要做无感知刷新token重新上传
+          // doSoming
+          reject(res)
+          return
+        }
+        reject(res)
+      })
+    })
+  }
+
+2. commonJS引入 const qn = require('qiniu-mini-program');
+
+  // upload方法
+  export const uploadQiniuCommon = (filePath) => {
+    return new Promise((resolve, reject) => {
+      // 上传需要的参数 可从服务端获取后保存到全局store里面
+      const { upToken, uploadUrl, domain, region } = getState('global').qiniuOptions || {}
+      // 获取上传文件的类型.png、.jpg等
+      const ext = filePath?.substring(filePath.lastIndexOf("."))
+      // 自定义设置的key值 dateFormat方法在下面
+      const newFileName = `${dateFormat(new Date(), "yyyyMMddhhmmss")}_${Math.random() * 10000}${ext}`
+      qn.upload({
+        filePath,
+        update: true, // 是否需要更新配置
+        options: {
+          key: `${uploadUrl}${newFileName}`, // uploadUrl是后台传的目录名可有可无 下载域名后面的路径加后缀名
+          region, // 上传地区 ECN等
+          upToken, // 上传凭证 服务端获取到存到全局数据中心
+          domain, // 图片下载前缀
+          shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称
+        },
+        success: (res) => {
+          if (!res?.imageUrl) return reject(res)
+          resolve(res?.imageUrl)
+        },
+        fail: (error) => {
+          // token过期或者错误
+          if (error?.statusCode === 401) {
+             // 根据自己所用框架清除全局七牛云配置 我用的时taro框架 redux方式
+            // 一般这里需要做无感知刷新token重新上传
+            // doSoming
+            reject(error)
+            return
+          }
+          reject(error)
+        }
+      })
+    })
+  }
+  
+  // 时间格式化 201903041606
+  export const dateFormat = (date = new Date(), fmt) => {
+    // 时间格式处理函数 
+    const o = {
+      "M+": date.getMonth() + 1, // 月份 
+      "d+": date.getDate(), // 日 
+      "h+": date.getHours(), // 小时 
+      "m+": date.getMinutes(), // 分 
+      "s+": date.getSeconds(), // 秒 
+      "q+": Math.floor((date.getMonth() + 3) / 3), // 季度 
+      "S": date.getMilliseconds() // 毫秒 
+    };
+    if (/(y+)/.test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (const k in o) {
+      if (new RegExp("(" + k + ")").test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k])
+          .length)));
+      }
+    }
+    return fmt;
+  }
+
+```
+### upload 方法参数
+```js
+qn.upload({
+  filePath: '', // 调用小程序相册获取到的文件本地临时路径 举例：http://tmp/35GWmAhZDg5O784a1.png。
+  update: true, // 是否需要更新配置 例如当token过时的时候需要重置config
+  options: {
+    key: '', // shouldUseQiniuFileName为false时取此值，自定义下载域名后面的路径加后缀名
+    /**
+     * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECN2分别对应七牛云的
+     * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域，后续新增的话再补充
+     */
+    region: '',
+    /**
+     * 七牛云bucket 外链前缀，外链在下载资源时用到 图片的下载域名前缀 http(s)://xxxx等
+     */
+    domain: '',
+    /**
+     * 获取upToken方法二选一即可，执行优先级为：upToken > upTokenUrl
+     * 二选一，推荐使用 upToken 外部传入token方式最好
+     */
+    upToken: '',
+    /**
+     * 自己的请求token的服务地址，从指定 url 通过 HTTP GET 获取 upToken
+     * 返回的格式必须是 json 且包含 upToken 字段，例如： {"upToken": "0MLvWPnyy..."}
+     */
+    upTokenUrl: '',
+    shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称取key值
+  }
+})
+```
