@@ -1,10 +1,13 @@
 {
   "name": "qiniu-mini-program",
-  "version": "1.0.0",
-  "description": "小程序七牛云上传图片或者视频，taro，uni-app等",
-  "main": "index.js",
+  "version": "1.0.1",
+  "description": "微信小程序七牛云上传图片或者视频，taro，uni-app等",
+  "main": "dist/qiniu-mini-program.js",
+  "module": "dist/qiniu-mini-program.esm.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --optimize-minimize --config webpack.config.js",
+    "pub": "npm run build && npm login && npm publish"
   },
   "repository": {
     "type": "git",
@@ -21,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program/issues"
   },
-  "homepage": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program#readme"
+  "homepage": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program#readme",
+  "devDependencies": {
+    "terser-webpack-plugin": "^4.2.0",
+    "webpack": "^4.44.0",
+    "webpack-cli": "^3.3.12"
+  }
 }
