@@ -1,4 +1,4 @@
-# Qiniu-Mini-Program
+# qiniu-upload-mini
 > 小程序使用七牛云上传图片或者视频，原生小程序代码、Taro、Uni-App等。  
 
 [toc]
@@ -22,7 +22,7 @@
 
 ### 安装
 ```js
-npm install qiniu-mini-program 或者 yarn add qiniu-mini-program
+npm install qiniu-upload-mini 或者 yarn add qiniu-upload-mini
 ```
 
 ### upload 方法参数
@@ -73,7 +73,7 @@ qn.upload({
 
 - **2种页面调用方法**
 ```js
-1. ESM引入 import qn from 'qiniu-mini-program';
+1. ESM引入 import qn from 'qiniu-upload-mini';
 
   // 自己封装的Promise方法
   export const uploadQiniuCommon = (filePath) => {
@@ -111,7 +111,7 @@ qn.upload({
     })
   }
 
-2. commonJS引入 const qn = require('qiniu-mini-program');
+2. commonJS引入 const qn = require('qiniu-upload-mini');
 
   // upload方法
   export const uploadQiniuCommon = (filePath) => {
