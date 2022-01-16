@@ -1,6 +1,6 @@
 {
   "name": "qiniu-upload-mini",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "微信小程序七牛云上传图片或者视频，taro，uni-app等",
   "main": "dist/qiniu-mini-program.esm.js",
   "module": "dist/qiniu-mini-program.esm.js",
