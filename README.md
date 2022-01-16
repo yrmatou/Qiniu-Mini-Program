@@ -6,6 +6,64 @@
 ### 资料
 - [七牛云直接上传文档](https://developer.qiniu.com/kodo/1312/upload)  
 
+### 准备
+- 根据你创建的七牛`存储空间`，把对应的 https 上传地址添加到小程序的访问白名单中，方法如下：
+
+>1. 登录 [微信公众平台](https://mp.weixin.qq.com/)，前往 **设置 - 开发设置**，点击 **服务器配置** 下的「**修改**」链接。
+>2. 修改 uploadFile 域名(比如华东 https 上传地址为：`https://upload.qiniup.com`，地址不清楚写什么请参见[https地址附录](#region))
+>3. 如果需要下载文件，则还需要一同设置 **downloadFile 域名**，为你的 bucket 下载地址
+>4. 保存即可
+
+| 字段名             | 内容                             |
+| --------------- | ------------------------------ |
+| request 域名      | https://yourServce.com         |
+| uploadFile 域名   | https://upload.qiniup.com （根据存储区域填写）  |
+| downloadFile 域名 | https://baldkf.bkt.clouddn.com |
+
+### upload 方法参数
+```js
+qn.upload({
+  filePath: '', // 调用小程序相册获取到的文件本地临时路径 举例：http://tmp/35GWmAhZDg5O784a1.png。
+  update: true, // 是否需要更新配置 例如当token过时的时候需要重置config
+  options: {
+    key: '', // shouldUseQiniuFileName为false时取此值，自定义下载域名后面的路径加后缀名
+    /**
+     * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECN2分别对应七牛云的
+     * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域，后续新增的话再补充
+     */
+    region: '',
+    /**
+     * 七牛云bucket 外链前缀，外链在下载资源时用到 图片的下载域名前缀 http(s)://xxxx等
+     */
+    domain: '',
+    /**
+     * 获取upToken方法二选一即可，执行优先级为：upToken > upTokenUrl
+     * 二选一，推荐使用 upToken 外部传入token方式最好
+     */
+    upToken: '',
+    /**
+     * 自己的请求token的服务地址，从指定 url 通过 HTTP GET 获取 upToken
+     * 返回的格式必须是 json 且包含 upToken 字段，例如： {"upToken": "0MLvWPnyy..."}
+     */
+    upTokenUrl: '',
+    shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称取key值
+  }
+})
+```
+- **对于存储区域和 options 中 region**
+七牛云文件上传接口，文件向匹配的接口中传输，存储区域对应 HTTPS 地址，我这里用的是**加速上传**路径，参考[官方文档](https://developer.qiniu.com/kodo/1671/region-endpoint-fq)
+
+<a id="region"></a>
+
+| 存储区域 | 区域代码 | HTTPS 地址             |
+| -------- | -------- | ---------------------- |
+| 华东     | ECN      | https://upload.qiniup.com |
+|华东浙2   | ECNZ     | https://upload-cn-east-2.qiniup.com |
+| 华北     | NCN      | https://upload-z1.qiniup.com  |
+| 华南     | SCN      | https://upload-z2.qiniup.com  |
+| 北美     | NA       | https://upload-na0.qiniup.com |
+| 新加坡   | ASG      | https://upload-as0.qiniup.com |
+
 ### 安装
 ```js
 npm install qiniu-mini-program 或者 yarn add qiniu-mini-program
@@ -117,34 +175,4 @@ npm install qiniu-mini-program 或者 yarn add qiniu-mini-program
     return fmt;
   }
 
-```
-### upload 方法参数
-```js
-qn.upload({
-  filePath: '', // 调用小程序相册获取到的文件本地临时路径 举例：http://tmp/35GWmAhZDg5O784a1.png。
-  update: true, // 是否需要更新配置 例如当token过时的时候需要重置config
-  options: {
-    key: '', // shouldUseQiniuFileName为false时取此值，自定义下载域名后面的路径加后缀名
-    /**
-     * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECN2分别对应七牛云的
-     * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域，后续新增的话再补充
-     */
-    region: '',
-    /**
-     * 七牛云bucket 外链前缀，外链在下载资源时用到 图片的下载域名前缀 http(s)://xxxx等
-     */
-    domain: '',
-    /**
-     * 获取upToken方法二选一即可，执行优先级为：upToken > upTokenUrl
-     * 二选一，推荐使用 upToken 外部传入token方式最好
-     */
-    upToken: '',
-    /**
-     * 自己的请求token的服务地址，从指定 url 通过 HTTP GET 获取 upToken
-     * 返回的格式必须是 json 且包含 upToken 字段，例如： {"upToken": "0MLvWPnyy..."}
-     */
-    upTokenUrl: '',
-    shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称取key值
-  }
-})
 ```

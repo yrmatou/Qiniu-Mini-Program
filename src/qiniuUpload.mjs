@@ -4,7 +4,7 @@
  */
  let config = {
   /**
-   * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECN2分别对应七牛云的
+   * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECNZ分别对应七牛云的
    * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域，后续新增的话再补充
    */
   qiniuRegion: '',
@@ -48,13 +48,13 @@ function setConfig(options) {
 }
 /**
  * 选择七牛云文件上传接口，文件向匹配的接口中传输。
- * ECN, SCN, NCN, NA, ASG，ECN2分别对应七牛云的：华东，华东浙2，华南，华北，北美，新加坡。6个区域
+ * ECN, SCN, NCN, NA, ASG，ECNZ分别对应七牛云的：华东，华东浙2，华南，华北，北美，新加坡。6个区域
  * 新增的区域自行添加就行
  */
  function uploadURLFromRegionCode(code) {
   const map = new Map([
     ['ECN', 'https://upload.qiniup.com'],
-    ['ECN2', 'https://upload-cn-east-2.qiniup.com'],
+    ['ECNZ', 'https://upload-cn-east-2.qiniup.com'],
     ['NCN', 'https://upload-z1.qiniup.com'],
     ['SCN', 'https://upload-z2.qiniup.com'],
     ['NA', 'https://upload-na0.qiniup.com'],
