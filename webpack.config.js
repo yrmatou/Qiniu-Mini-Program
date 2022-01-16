@@ -1,12 +1,12 @@
 const TerserPlugin = require('terser-webpack-plugin');
 module.exports = {
   entry: {
-    "qiniu-mini-program": './src/qiniuUpload.js',   //为了输出两个文件，我们指定两个出口
-    "qiniu-mini-program.esm": './src/qiniuUpload.esm.js',
+    "qiniu-upload-mini": './src/qiniuUpload.js',   //为了输出两个文件，我们指定两个出口
+    "qiniu-upload-mini.esm": './src/qiniuUpload.esm.js',
   },
   output: {
     filename: "[name].js",  //因为是多个文件，所以这样写
-    library: "qiniu-mini-program",  //打包出去库的名字
+    library: "qiniu-upload-mini",  //打包出去库的名字
     libraryExport: "default",
     libraryTarget: "umd",   //定义的规范，打包库的目标选项，包含var 、 assign 、 this 、 window 、 global 、 commonjs 、 commonjs2 、 commonjsmodule 、 amd 、 umd 、 umd2 、 jsonp这么多 umd是最通用的规范 默认值是var
   },
