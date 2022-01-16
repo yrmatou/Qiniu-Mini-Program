@@ -20,6 +20,11 @@
 | uploadFile 域名   | https://upload.qiniup.com （根据存储区域填写）  |
 | downloadFile 域名 | https://baldkf.bkt.clouddn.com |
 
+### 安装
+```js
+npm install qiniu-mini-program 或者 yarn add qiniu-mini-program
+```
+
 ### upload 方法参数
 ```js
 qn.upload({
@@ -63,11 +68,6 @@ qn.upload({
 | 华南     | SCN      | https://upload-z2.qiniup.com  |
 | 北美     | NA       | https://upload-na0.qiniup.com |
 | 新加坡   | ASG      | https://upload-as0.qiniup.com |
-
-### 安装
-```js
-npm install qiniu-mini-program 或者 yarn add qiniu-mini-program
-```
 
 ### 2分钟使用教程
 
