@@ -69,9 +69,9 @@ qn.upload({
 | 北美     | NA       | https://upload-na0.qiniup.com |
 | 新加坡   | ASG      | https://upload-as0.qiniup.com |
 
-### 2分钟使用教程
+### 1分钟使用教程
 
-- **2种页面调用方法**
+- **页面调用方法**
 ```js
 1. ESM引入 import qn from 'qiniu-upload-mini';
 
@@ -111,46 +111,6 @@ qn.upload({
     })
   }
 
-2. commonJS引入 const qn = require('qiniu-upload-mini');
-
-  // upload方法
-  export const uploadQiniuCommon = (filePath) => {
-    return new Promise((resolve, reject) => {
-      // 上传需要的参数 可从服务端获取后保存到全局store里面
-      const { upToken, uploadUrl, domain, region } = getState('global').qiniuOptions || {}
-      // 获取上传文件的类型.png、.jpg等
-      const ext = filePath?.substring(filePath.lastIndexOf("."))
-      // 自定义设置的key值 dateFormat方法在下面
-      const newFileName = `${dateFormat(new Date(), "yyyyMMddhhmmss")}_${Math.random() * 10000}${ext}`
-      qn.upload({
-        filePath,
-        update: true, // 是否需要更新配置
-        options: {
-          key: `${uploadUrl}${newFileName}`, // uploadUrl是后台传的目录名可有可无 下载域名后面的路径加后缀名
-          region, // 上传地区 ECN等
-          upToken, // 上传凭证 服务端获取到存到全局数据中心
-          domain, // 图片下载前缀
-          shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称
-        },
-        success: (res) => {
-          if (!res?.imageUrl) return reject(res)
-          resolve(res?.imageUrl)
-        },
-        fail: (error) => {
-          // token过期或者错误
-          if (error?.statusCode === 401) {
-             // 根据自己所用框架清除全局七牛云配置 我用的时taro框架 redux方式
-            // 一般这里需要做无感知刷新token重新上传
-            // doSoming
-            reject(error)
-            return
-          }
-          reject(error)
-        }
-      })
-    })
-  }
-  
   // 时间格式化 201903041606
   export const dateFormat = (date = new Date(), fmt) => {
     // 时间格式处理函数 
