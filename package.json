@@ -22,15 +22,12 @@
     "uni-app"
   ],
   "author": "wangqiao",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program/issues"
   },
   "homepage": "https://github.com/wangQiaoBrother/Qiniu-Mini-Program#readme",
   "devDependencies": {
-    "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^4.2.0",
-    "webpack": "^4.44.0",
-    "webpack-cli": "^3.3.12"
+    "rimraf": "^3.0.2"
   }
 }

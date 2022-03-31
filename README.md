@@ -1,5 +1,4 @@
-# qiniu-upload-mini
-> 小程序使用七牛云上传图片或者视频，原生小程序代码、Taro、Uni-App等。  
+**微信小程序使用七牛云上传图片或者视频、原生小程序代码、Taro、Uni-App等。** 
 
 [toc]
 
@@ -19,6 +18,22 @@
 | request 域名      | https://yourServce.com         |
 | uploadFile 域名   | https://upload.qiniup.com （根据存储区域填写）  |
 | downloadFile 域名 | https://baldkf.bkt.clouddn.com |
+
+- **对于存储区域和 options 中 region**
+
+七牛云文件上传接口，文件向匹配的接口中传输，存储区域对应 HTTPS 地址，我这里用的是**加速上传**路径，参考[官方文档](https://developer.qiniu.com/kodo/1671/region-endpoint-fq)
+
+<a id="region"></a>
+
+| 存储区域 | 区域代码 | HTTPS 地址             |
+| -------- | -------- | ---------------------- |
+| 华东     | ECN      | https://upload.qiniup.com |
+|华东浙2   | ECNZ     | https://upload-cn-east-2.qiniup.com |
+| 华北     | NCN      | https://upload-z1.qiniup.com  |
+| 华南     | SCN      | https://upload-z2.qiniup.com  |
+| 北美     | NA       | https://upload-na0.qiniup.com |
+| 新加坡   | ASG      | https://upload-as0.qiniup.com |
+
 
 ### 安装
 ```js
@@ -55,25 +70,12 @@ qn.upload({
   }
 })
 ```
-- **对于存储区域和 options 中 region**
-七牛云文件上传接口，文件向匹配的接口中传输，存储区域对应 HTTPS 地址，我这里用的是**加速上传**路径，参考[官方文档](https://developer.qiniu.com/kodo/1671/region-endpoint-fq)
-
-<a id="region"></a>
-
-| 存储区域 | 区域代码 | HTTPS 地址             |
-| -------- | -------- | ---------------------- |
-| 华东     | ECN      | https://upload.qiniup.com |
-|华东浙2   | ECNZ     | https://upload-cn-east-2.qiniup.com |
-| 华北     | NCN      | https://upload-z1.qiniup.com  |
-| 华南     | SCN      | https://upload-z2.qiniup.com  |
-| 北美     | NA       | https://upload-na0.qiniup.com |
-| 新加坡   | ASG      | https://upload-as0.qiniup.com |
 
 ### 1分钟使用教程
 
 - **页面调用方法**
 ```js
-1. ESM引入 import qn from 'qiniu-upload-mini';
+  1. import qn from 'qiniu-upload-mini';
 
   // 自己封装的Promise方法
   export const uploadQiniuCommon = (filePath) => {
@@ -89,7 +91,7 @@ qn.upload({
         filePath,
         options: {
           key: `${uploadUrl}${newFileName}`, // uploadUrl是后台传的目录名可有可无 下载域名后面的路径加后缀名
-          region, // 上传地区 ECN等
+          region, // 上传地区 ECN等根据自己的地区对照上面的表填写
           upToken, // 上传凭证 服务端获取到存到全局数据中心
           domain, // 图片下载前缀
           shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称
