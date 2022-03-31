@@ -1,8 +1,10 @@
+import { platformObj } from './utils/config';
 /**
  * 针对微信小程序、Vue、Taro、ES6写法的七牛云上传图片或者视频js包
  * 详细使用看README.md即可
  */
  let config = {
+  platform: 'wx', // 微信小程序，uni-app,Taro,tt,支付宝等。
   /**
    * bucket 所在区域。ECN, SCN, NCN, NA, ASG，ECNZ分别对应七牛云的
    * 华东，华东浙2，华南，华北，北美，新加坡 6 个区域，后续新增的话再补充
@@ -27,6 +29,7 @@
  * 是否已经初始化过 正常只会初始化一次 假如token过期则需要再刷一次
  */
 let configBool = false;
+const platform = platformObj[config.platform] // 平台前缀
 /**
  * 七牛云配置初始化
  */
@@ -119,7 +122,7 @@ function doUpload({ filePath, options, progress, cancelTask }) {
     // qiniuShouldUseQiniuFileName 如果是 true，则文件的 key 由 qiniu 服务器分配（全局去重）。
     // 如果是 false，则文件的 key 使用微信自动生成的 filename。出于初代sdk用户升级后兼容问题的考虑，默认是 false。
     if (!config.qiniuShouldUseQiniuFileName) { formData['key'] = fileName };
-    const uploadTask = wx.uploadFile({
+    const uploadTask = platform.uploadFile({
       url: url,
       filePath,
       name: 'file',
@@ -157,7 +160,7 @@ function doUpload({ filePath, options, progress, cancelTask }) {
  */
 function getQiniuToken() {
   return new Promise((resolve, reject) => {
-    wx.request({
+    platform.request({
       url: config.qiniuUploadTokenUrl,
       success: (res) => {
         const token = res.data.upToken;
