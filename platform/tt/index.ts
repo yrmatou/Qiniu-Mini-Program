@@ -45,13 +45,13 @@ const platformObj: any = {
   // @ts-ignore
   // "taro": Taro,
   // @ts-ignore
-  "uni": uni,
+  // "uni": uni,
   // @ts-ignore
-  // "tt": tt,
+  "tt": tt,
   // @ts-ignore
   // "my": my
 };
-const platformName: string = 'uni';
+const platformName: string = 'tt';
 /**
  * 是否已经初始化过 正常只会初始化一次 假如token过期则需要再刷一次
  */

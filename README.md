@@ -58,13 +58,21 @@ qn.upload({
     domain: '',
     /**
      * 获取upToken方法二选一即可，执行优先级为：upToken > upTokenUrl
-     * 二选一，推荐使用 upToken 外部传入token方式最好
+     * 二选一，极力推荐使用 upToken 外部传入token方式最好
      */
     upToken: '',
     /**
-     * 自己的请求token的服务地址，从指定 url 通过 HTTP GET 获取 upToken
-     * 返回的格式必须是 json 且包含 upToken 字段，例如： {"upToken": "0MLvWPnyy..."}
-     */
+     * 自己的请求token的服务地址，从指定url通过 HTTP GET获取upToken
+     * 1. 该接口不用鉴权比如：必须传token或者cookie
+     * 2. 返回的格式必须是
+     * {
+     *  domain: "http://download.midadata.com",
+        expire: 3590,
+        preUrl: "mida/",
+        region: "ECN",
+        upToken: "wqeqweqweqw12312312312sdads"
+      }
+    */
     upTokenUrl: '',
     shouldUseQiniuFileName: false // true采用七牛云自定义名称即参数种key值无效，false时为自定义名称取key值
   }
@@ -75,7 +83,7 @@ qn.upload({
 
 - **页面调用方法**
 ```js
-  1. import qn from 'qiniu-upload-mini';
+  1. import { setConfig, upload } from 'qiniu-upload-mini';
 
   // 自己封装的Promise方法
   export const uploadQiniuCommon = (filePath) => {
@@ -86,7 +94,7 @@ qn.upload({
       const ext = filePath?.substring(filePath.lastIndexOf("."))
       // 自定义设置的key值 dateFormat方法在下面
       const newFileName = `${dateFormat(new Date(), "yyyyMMddhhmmss")}_${Math.random() * 10000}${ext}`
-      qn.upload({
+      upload({
         update: true, // 是否需要更新配置
         filePath,
         options: {
@@ -102,7 +110,7 @@ qn.upload({
       }).catch(res => {
         // token过期或者错误
         if (res?.statusCode === 401) {
-          // 根据自己所用框架清除全局七牛云配置 我用的时taro框架 redux方式
+          // 根据自己所用框架清除全局七牛云配置
           // 一般这里需要做无感知刷新token重新上传
           // doSoming
           reject(res)
@@ -113,7 +121,7 @@ qn.upload({
     })
   }
 
-  // 时间格式化 201903041606
+  // 附带时间格式化 201903041606
   export const dateFormat = (date = new Date(), fmt) => {
     // 时间格式处理函数 
     const o = {
@@ -139,6 +147,12 @@ qn.upload({
 
 ```
 
-### TODO
-* 通过upTokenUrl方式请求函数，获取七牛云token接口不用加鉴权
-* 怎么打包多平台版本代码
+### FAQ
+* 目前npm包方式支持taro，uni-app编译成微信小程序和原生小程序
+* 其他平台单独下载js文件就行[下载](/platform/)
+
+### License
+[MIT](https://github.com/liuxing/translator-cli/blob/master/LICENSE)
+
+### Keywords
+小程序，Taro，uni-app
