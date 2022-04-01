@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowJs": true,
+    "declaration": true,
+    "strict": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true, // 未使用变量报错
+    "lib": ["es6", "esnext"],
+    "typeRoots": ["types/index.d.ts"]
+  },
+  "include": ["src/**/*", "/types/**/*"],
+  "exclude": ["node_modules", "tests*", "examples"]
+}

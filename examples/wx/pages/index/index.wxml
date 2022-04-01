@@ -1,0 +1,9 @@
+<!--index.wxml-->
+<view class="container">
+  <button catchtap="uploadImageTap">上传图片到七牛云</button>
+  <image src="{{imageUrl}}" mode="aspectFit"></image>
+</view>
+<view class="container container-two">
+  <button catchtap="uploadVideoTap">上传视频到七牛云</button>
+  <video src="{{videoUrl}}" mode="aspectFit"></video>
+</view>
