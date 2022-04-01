@@ -41,17 +41,17 @@ const config: Config = {
  */
 const platformObj: any = {
   // @ts-ignore
-  // "wx": wx,
+  "wx": wx,
   // @ts-ignore
   // "taro": Taro,
   // @ts-ignore
-  "uni": uni,
+  // "uni": uni,
   // @ts-ignore
   // "tt": tt,
   // @ts-ignore
   // "my": my
 };
-const platformName: string = 'uni';
+const platformName: string = 'wx';
 /**
  * 是否已经初始化过 正常只会初始化一次 假如token过期则需要再刷一次
  */

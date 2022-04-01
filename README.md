@@ -1,4 +1,4 @@
-**微信小程序使用七牛云上传图片或者视频、原生小程序代码、Taro、Uni-App等。** 
+## 各平台小程序使用七牛云上传图片或者视频 
 
 [toc]
 
@@ -42,7 +42,7 @@ npm install qiniu-upload-mini 或者 yarn add qiniu-upload-mini
 
 ### upload 方法参数
 ```js
-qn.upload({
+upload({
   filePath: '', // 调用小程序相册获取到的文件本地临时路径 举例：http://tmp/35GWmAhZDg5O784a1.png。
   update: true, // 是否需要更新配置 例如当token过时的时候需要重置config
   options: {
@@ -147,7 +147,7 @@ qn.upload({
 
 ```
 
-### FAQ
+### 各平台支持
 * 目前npm包方式支持taro，uni-app编译成微信小程序和原生小程序
 * 其他平台单独下载js文件就行[下载](/platform/)
 
