@@ -4,6 +4,7 @@
     "noImplicitAny": true,
     "module": "ESNext",
     "target": "ESNext",
+    "esModuleInterop": true,
     "allowJs": true,
     "declaration": true,
     "strict": true,
@@ -11,8 +12,8 @@
     "moduleResolution": "node",
     "noUnusedLocals": true, // 未使用变量报错
     "lib": ["es6", "esnext"],
-    "typeRoots": ["types/index.d.ts"]
+    "typeRoots": ["index.d.ts"]
   },
-  "include": ["src/**/*", "/types/**/*"],
-  "exclude": ["node_modules", "tests*", "examples"]
+  "include": ["src/**/*", "types/**/*"],
+  "exclude": ["node_modules", "examples"]
 }

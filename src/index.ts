@@ -1,4 +1,4 @@
-import { Config, Keys, Upload, Responed } from '../types';
+import { Config, Keys, Upload, Responed } from '../index';
 /**
  * 原生微信小程序、Uni-app、Taro平台的ES6 Promise语法的七牛云上传图片或者视频
  */
@@ -60,7 +60,7 @@ const platform: any = platformObj[platformName]; // 确定平台
 /**
  * 七牛云配置初始化
  */
-function setConfig(options: { [x: string]: string; region: string; }) {
+function setConfig(options: { [x: string]: string | boolean; region: string; }) {
   configBool = true;
   if (!options || !options.region) {
     return Promise.reject('qiniu config params error');

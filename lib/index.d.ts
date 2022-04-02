@@ -1,9 +1,9 @@
-import { Upload } from '../types';
+import { Upload } from '../index';
 /**
  * 七牛云配置初始化
  */
 declare function setConfig(options: {
-    [x: string]: string;
+    [x: string]: string | boolean;
     region: string;
 }): Promise<void>;
 /**

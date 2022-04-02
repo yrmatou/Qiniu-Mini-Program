@@ -3,4 +3,5 @@ lib/
 .rn_temp/
 node_modules/
 .DS_Store
+package-lock.json
 yarn-error.log
