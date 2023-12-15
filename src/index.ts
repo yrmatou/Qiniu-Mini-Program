@@ -1,4 +1,4 @@
-import { Config, Keys, Upload, Responed } from '../index';
+import type { Config, Keys, Upload, Responed } from '../index';
 /**
  * 原生微信小程序、Uni-app、Taro平台的ES6 Promise语法的七牛云上传图片或者视频
  */
@@ -41,17 +41,17 @@ const config: Config = {
  */
 const platformObj: any = {
   // @ts-ignore
-  "wx": wx,
+  // "wx": wx,
   // @ts-ignore
   // "taro": Taro,
   // @ts-ignore
-  // "uni": uni,
+  "uni": uni,
   // @ts-ignore
   // "tt": tt,
   // @ts-ignore
   // "my": my
 };
-const platformName: string = 'wx';
+const platformName: string = 'uni';
 /**
  * 是否已经初始化过 正常只会初始化一次 假如token过期则需要再刷一次
  */

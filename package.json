@@ -1,6 +1,6 @@
 {
   "name": "qiniu-upload-mini",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "各平台小程序使用七牛云上传图片或者视频",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
